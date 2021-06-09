@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ezconfigparser",
-    version="0.2.1",
+    version="0.2.3",
     author="Zesen",
     author_email="451324565@qq.com",
     description="A package for easy manipulating configuration files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires='>=2.7',
-    # url="https://github.com/pypa/sampleproject",
+    url="https://github.com/WangZesen/ezconfigparser",
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 2',

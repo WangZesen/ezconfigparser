@@ -12,6 +12,12 @@ What it can do:
 - merge configure file
 - parse command line arguments based on configure file
 
+## Install & Upgrade
+
+```shell
+pip install ezconfigparser --upgrade
+```
+
 ## How to Use
 
 ### Create Template Config File
