@@ -48,7 +48,10 @@ class ParameterSection(object):
     
     def parse_args(self, args):
         for key in self._params:
-            _value = args.__getattribute__(key)
+            try:
+                _value = args.__getattribute__(key)
+            except:
+                continue
             if not (_value is None):
                 if self._params[key]['type'] in ['str', 'float', 'int']:
                     self._params[key]['value'] = _value
@@ -83,7 +86,7 @@ class ParameterSection(object):
                 print('{} = {}\n'.format(key, _value), file=f)
         print('', file=f)
     
-    def add_arguments(self, parser):
+    def add_arguments(self, parser, disabled_opt):
         for key in self._params:
             if self._params[key]['type'] == 'float':
                 _type = float
@@ -91,7 +94,8 @@ class ParameterSection(object):
                 _type = int
             else:
                 _type = str
-            parser.add_argument('--{}'.format(key), type=_type, help=self._params[key]['desc'], metavar=self._params[key]['type'].upper())
+            if disabled_opt[key]:
+                parser.add_argument('--{}'.format(key), type=_type, help=self._params[key]['desc'], metavar=self._params[key]['type'].upper())
     
     def __getitem__(self, key):
         return self._params[key]['value']
@@ -225,9 +229,17 @@ class Config(object):
     
     def get_parser(self):
         parser = argparse.ArgumentParser(description=self._note)
+        parser.add_argument('-c', '--config', type=str, help='config file directory')
+        disabled_opt = {'config': False}
+        for section in self._sections:
+            for param in self._sections[section]:
+                if param in disabled_opt:
+                    disabled_opt[param] = False
+                else:
+                    disabled_opt[param] = True
         for section in self._sections:
             group = parser.add_argument_group(title=section)
-            self._sections[section].add_arguments(group)
+            self._sections[section].add_arguments(group, disabled_opt)
         return parser
     
     def parse_args(self):
@@ -236,6 +248,8 @@ class Config(object):
         for section in self._sections:
             self._sections[section].parse_args(args)
         self._build_direct_attr()
+        if args.config:
+            self.parse(args.config)
     
     def merge(self, other, overwrite=False):
         for section in other._sections:
