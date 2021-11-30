@@ -148,7 +148,8 @@ class VagueValue():
         pass
 
 class Config(object):
-    LEGAL_LETTERS = [chr(65 + i) for i in range(26)] + [chr(97 + i) for i in range(26)] + ['_']
+    LEGAL_LETTERS = [chr(65 + i) for i in range(26)] + [chr(97 + i) for i in range(26)] + [chr(48 + i) for i in range(10)] + ['_']
+    NAME_ERROR_PROMPT = "the name should only contain letters (both upper's and lower's), underline '_', and digits"
 
     def __init__(self, default_cfg=None, allow_vague=False):
         self._sections = {}
@@ -174,7 +175,8 @@ class Config(object):
                     section_name = line.strip('[] ')
                     assert len(section_name), 'empty section name'
                     assert not section_name.startswith('_'), 'section name can not start with "_"'
-                    assert not any([not (x in Config.LEGAL_LETTERS) for x in section_name]), 'invalid section name, {}'.format(section_name)
+                    assert not section_name[0].isdigit(), 'section name can not start with digits'
+                    assert not any([not (x in Config.LEGAL_LETTERS) for x in section_name]), 'invalid section name, {}\n{}'.format(section_name, self.NAME_ERROR_PROMPT)
                     assert not (section_name in _section_keys), 'repeated decleration of section, {}'.format(section_name)
                     if not (section_name in self._sections):
                         self._sections[section_name] = ParameterSection(section_name)
@@ -188,7 +190,9 @@ class Config(object):
                     param_value = line[line.index('=') + 1:].strip(' ')
                     assert section_name, 'no section specified above'
                     assert len(param_name), 'empty parameter name'
-                    assert not any([not (x in Config.LEGAL_LETTERS) for x in param_name]), 'invalid parameter name, {}'.format(param_name)
+                    assert not param_name.startswith('_'), 'parameter name can not start with "_"'
+                    assert not param_name[0].isdigit(), 'parameter name can not start with digits'
+                    assert not any([not (x in Config.LEGAL_LETTERS) for x in param_name]), 'invalid parameter name, {}\n{}'.format(section_name, self.NAME_ERROR_PROMPT)
                     if param_name in _param_keys:
                         logging.warn('Parameter "{}" appears multiple times in config "{}"'.format(param_name, cfg_dir))
                     self._sections[section_name].add_param(param_name, param_type, param_desc, param_value, add_new_param=add_new_param)
@@ -205,7 +209,9 @@ class Config(object):
                         param_value = line[line.index('=') + 1:].strip(' ')
                         assert section_name, 'no section specified above'
                         assert len(param_name), 'empty parameter name'
-                        assert not any([not (x in Config.LEGAL_LETTERS) for x in param_name]), 'invalid parameter name, {}'.format(param_name)
+                        assert not param_name.startswith('_'), 'parameter name can not start with "_"'
+                        assert not param_name[0].isdigit(), 'parameter name can not start with digits'
+                        assert not any([not (x in Config.LEGAL_LETTERS) for x in param_name]), 'invalid parameter name, {}\n{}'.format(section_name, self.NAME_ERROR_PROMPT)
                         if param_name in _param_keys:
                             logging.warn('Parameter "{}" appears multiple times'.format(param_name))
                         self._sections[section_name].add_param(param_name, param_type, param_desc, param_value, add_new_param=add_new_param)

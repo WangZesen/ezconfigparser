@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ezconfigparser",
-    version="0.2.4",
+    version="0.2.5",
     author="Zesen",
     author_email="451324565@qq.com",
     description="A package for easy manipulating configuration files.",
