@@ -53,8 +53,12 @@ class ParameterSection(object):
             except:
                 continue
             if not (_value is None):
-                if self._params[key]['type'] in ['str', 'float', 'int']:
-                    self._params[key]['value'] = _value
+                if self._params[key]['type'] == 'str':
+                    self._params[key]['value'] = str(_value)
+                elif self._params[key]['type'] == 'int':
+                    self._params[key]['value'] = int(_value)
+                elif self._params[key]['type'] == 'float':
+                    self._params[key]['value'] = float(_value)
                 elif self._params[key]['type'] == 'json':
                     self._params[key]['value'] = json.loads(_value)
                 else:

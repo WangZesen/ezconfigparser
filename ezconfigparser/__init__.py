@@ -1,6 +1,6 @@
 import sys
 
-VERSION = '0.2.7'
+VERSION = '0.2.8'
 
 if sys.version_info < (3, 0):
     from config import Config
